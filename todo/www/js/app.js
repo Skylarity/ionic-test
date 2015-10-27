@@ -37,7 +37,7 @@ angular.module('todo', ['ionic'])
     // A utility function for creating a new project with the given projectTitle
     var createProject = function(projectTitle) {
         var newProject = Projects.newProject(projectTitle);
-        $scope.products.push(newProject);
+        $scope.projects.push(newProject);
         Projects.save($scope.projects);
         $scope.selectProject(newProject, $scope.projects.length - 1);
     };
@@ -49,21 +49,23 @@ angular.module('todo', ['ionic'])
     $scope.activeProject = $scope.projects[Projects.getLastActiveIndex()];
 
     // Called to create a new project
-    $scope.newProject = function() {
-        var projectTitle = prompt('Project name');
-        if(projectTitle) {
-            createProject(projectTitle);
-        }
-    };
+    // $scope.newProject = function() {
+    //     var projectTitle = prompt('Project name');
+    //     if(projectTitle) {
+    //         createProject(projectTitle);
+    //     }
+    // };
 
     // Called to select the given project
     $scope.selectProject = function(project, index) {
-        $scope.activeProject = project;
-        Projects.setLastActiveIndex(index);
-        $ionicSideMenuDelegate.toggleLeft = false;
+        if(index !== Projects.getLastActiveIndex()) {
+            $scope.activeProject = project;
+            Projects.setLastActiveIndex(index);
+            $ionicSideMenuDelegate.toggleLeft(false);
+        }
     };
 
-    // Create and load the modal
+    // Create and load the task modal
     $ionicModal.fromTemplateUrl('templates/new-task.html', function(modal) {
         $scope.taskModal = modal;
     }, {
@@ -73,10 +75,17 @@ angular.module('todo', ['ionic'])
 
     // Called on form submit
     $scope.createTask = function (task) {
-        $scope.tasks.push({
+        if(!$scope.activeProject || !task) {
+            return;
+        }
+        $scope.activeProject.tasks.push({
             title: task.title
         });
         $scope.taskModal.hide();
+
+        // Inefficient, but save all the projects
+        Projects.save($scope.projects);
+
         task.title = "";
     };
 
@@ -87,6 +96,28 @@ angular.module('todo', ['ionic'])
 
     $scope.closeNewTask = function() {
         $scope.taskModal.hide();
+    };
+
+    // Called on form submit
+    $scope.createProjectFromModal = function(project) {
+        if(!$scope.activeProject || !project) {
+            return;
+        }
+        if(project) {
+            createProject(project.title);
+        }
+        $scope.projectModal.hide();
+
+        project.title = "";
+    };
+
+    // Open the modal
+    $scope.newProject = function() {
+        $scope.projectModal.show();
+    };
+
+    $scope.closeNewProject = function() {
+        $scope.projectModal.hide();
     };
 
     $scope.toggleProjects = function() {

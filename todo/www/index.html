@@ -12,6 +12,9 @@
         <link href="css/ionic.app.css" rel="stylesheet">
         -->
 
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
+
         <!-- ionic/angularjs js -->
         <script src="lib/ionic/js/ionic.bundle.js"></script>
 
@@ -41,7 +44,7 @@
                 <ion-content>
                     <!-- List and list items -->
                     <ion-list>
-                        <ion-item ng-repeat="task in tasks">
+                        <ion-item ng-repeat="task in activeProject.tasks">
                             {{task.title}}
                         </ion-item>
                     </ion-list>

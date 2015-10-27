@@ -41,7 +41,7 @@ angular.module('todo', ['ionic'])
     $scope.projects.push(newProject);
     Projects.save($scope.projects);
     $scope.selectProject(newProject, $scope.projects.length-1);
-};
+  };
 
 
   // Load or initialize projects
