@@ -3,13 +3,13 @@
     <!-- Modal header bar -->
     <ion-header-bar class="bar-secondary">
         <h1 class="title">New Project</h1>
-        <button class="button button-clear button-positive" ng-click="closeNewProject()">Cancel</button>
+        <button class="button button-clear button-positive" ng-click="closeModal(1)">Cancel</button>
     </ion-header-bar>
 
     <!-- Modal content area -->
     <ion-content>
 
-        <form ng-submit="createProjectFromModal(project)">
+        <form ng-submit="createProject(project)">
             <div class="list">
                 <label class="item item-input">
                     <input type="text" placeholder="What's your next project?" ng-model="project.title" autofocus>

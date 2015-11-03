@@ -37,7 +37,7 @@
                     <h1 class="title">{{activeProject.title}}</h1>
 
                     <!-- New task button -->
-                    <button class="button button-icon" ng-click="newTask()">
+                    <button class="button button-icon" ng-click="openModal(0)">
                         <i class="icon ion-compose"></i>
                     </button>
                 </ion-header-bar>
@@ -46,6 +46,7 @@
                     <ion-list>
                         <ion-item ng-repeat="task in activeProject.tasks">
                             {{task.title}}
+                            <button class="button button-icon ion-close pull-right" ng-click="deleteTask($index)"></button>
                         </ion-item>
                     </ion-list>
                 </ion-content>
@@ -54,13 +55,15 @@
             <!-- Left menu -->
             <ion-side-menu side="left">
                 <ion-header-bar class="bar-dark">
+                    <button class="button button-icon ion-heart-broken" style="color:red;" ng-click="nukeEverything()"></button>
                     <h1 class="title">Projects</h1>
-                    <button class="button button-icon ion-plus" ng-click="newProject()"></button>
+                    <button class="button button-icon ion-plus" ng-click="openModal(1)"></button>
                 </ion-header-bar>
                 <ion-content scroll="false">
                     <ion-list>
                         <ion-item ng-repeat="project in projects" ng-click="selectProject(project, $index)" ng-class="{active: activeProject == project}">
                             {{project.title}}
+                            <button class="button button-icon ion-close pull-right" ng-click="deleteProject($index)"></button>
                         </ion-item>
                     </ion-list>
                 </ion-content>

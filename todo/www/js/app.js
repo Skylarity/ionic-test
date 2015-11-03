@@ -69,12 +69,22 @@ angular.module('todo', ['ionic'])
     $ionicModal.fromTemplateUrl('templates/new-task.html', function(modal) {
         $scope.taskModal = modal;
     }, {
+        id: 0,
+        scope: $scope,
+        animation: 'slide-in-up'
+    });
+
+    // Create and load the task modal
+    $ionicModal.fromTemplateUrl('templates/new-project.html', function(modal) {
+        $scope.projectModal = modal;
+    }, {
+        id: 1,
         scope: $scope,
         animation: 'slide-in-up'
     });
 
     // Called on form submit
-    $scope.createTask = function (task) {
+    $scope.createTask = function(task) {
         if(!$scope.activeProject || !task) {
             return;
         }
@@ -89,34 +99,42 @@ angular.module('todo', ['ionic'])
         task.title = "";
     };
 
+    $scope.deleteTask = function(index) {
+        $scope.activeProject.tasks.splice(index, 1);
+        Projects.save($scope.projects);
+    };
+
+    $scope.deleteProject = function(index) {
+        $scope.projects.splice(index, 1);
+        Projects.save($scope.projects);
+        if (index > 0) {
+            $scope.activeProject = $scope.projects[index - 1];
+        } else {
+            $scope.activeProject = $scope.projects[0];
+        }
+        $ionicSideMenuDelegate.toggleLeft();
+    };
+
     // Open the modal
-    $scope.newTask = function() {
-        $scope.taskModal.show();
+    $scope.openModal = function(index) {
+        if (index === 0) {
+            $scope.taskModal.show();
+        } else {
+            $scope.projectModal.show();
+        }
     };
 
-    $scope.closeNewTask = function() {
-        $scope.taskModal.hide();
+    $scope.closeModal = function(index) {
+        if (index === 0) {
+            $scope.taskModal.hide();
+        } else {
+            $scope.projectModal.hide();
+        }
     };
 
-    // Called on form submit
-    $scope.createProjectFromModal = function(project) {
-        if(!$scope.activeProject || !project) {
-            return;
-        }
-        if(project) {
-            createProject(project.title);
-        }
-        $scope.projectModal.hide();
-
+    $scope.createProject = function(project) {
+        createProject(project.title);
         project.title = "";
-    };
-
-    // Open the modal
-    $scope.newProject = function() {
-        $scope.projectModal.show();
-    };
-
-    $scope.closeNewProject = function() {
         $scope.projectModal.hide();
     };
 
@@ -124,16 +142,14 @@ angular.module('todo', ['ionic'])
         $ionicSideMenuDelegate.toggleLeft();
     };
 
-    // Try to create the first project, amke sure to defer this by using $timeout so everything is initialized properly
+    $scope.nukeEverything = function() {
+        window.localStorage.projects = [];
+    };
+
+    // Try to create the first project, make sure to defer this by using $timeout so everything is initialized properly
     $timeout(function() {
         if($scope.projects.length === 0) {
-            while(true) {
-                var projectTitle = prompt('Your first project title:');
-                if(projectTitle) {
-                    createProject(projectTitle);
-                    break;
-                }
-            }
+            createProject("My First Project");
         }
     });
 })
